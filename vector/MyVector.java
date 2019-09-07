@@ -1,43 +1,64 @@
 package vector;
 
 public class MyVector {
-    private int[] vector;
+    private Object[] vector;
     private int size = 0;
-    private int vectorInitialSize = 3;
+    private int vectorInitialSize = 1;
 
     public MyVector() {
-        vector = new int[vectorInitialSize];
+        vector = new Object[vectorInitialSize];
     }
 
-    public MyVector(int item) {
-        vector[size] = item;
-        size++;
-    }
-
-    public void add(int item) {
+    private void resizeIfNeeded() {
         if (size >= vectorInitialSize) {
-            int[] temp = vector;
-            vector = new int[2*vectorInitialSize];
-            for (int i=0; i< vectorInitialSize; i++){
+            Object[] temp = vector;
+            vector = new Object[2*vectorInitialSize];
+            for (int i = 0; i < vectorInitialSize; i++){
                 vector[i] = temp[i];
             }
-            vectorInitialSize *=2;
+            vectorInitialSize *= 2;
         }
+    }
+
+    public void pushBack(Object item) {
+        resizeIfNeeded();
         vector[size] = item;
         size++;
     }
 
-    public void insertAtIndex(int item, int index) {
-        if (index>size) {
+    public void pushFront(Object item) {
+        resizeIfNeeded();
+        for (int i = size; i <= 1 ; i--) {
+            vector[i] = vector[i-1];
+        }
+        vector[0] = item;
+        size++;
+    }
+
+    public void insertAtIndex(Object item, int index) {
+        if (index > size) {
             return;
         }
-        int temp = vector[index-1];
-        for (int i=index-1; i < size; i++) {
-            vector[i] = item;
-            item = vector[i+1];
-            vector[i +1] = temp;
+        Object[] newVector = new Object[vectorInitialSize + 1];
+        for (int i = 0; i < index; i++){
+            newVector[i] = vector[i];
         }
+        for (int i = index; i < vectorInitialSize; i++){
+            newVector[i+1] = vector[i];
+        }
+        newVector[index] = item;
+        vector = newVector;
         size++;
+    }
+
+    public void deleteAtIndex(int index) {
+        if (index >= size) {
+            return;
+        }
+        for (int i = index - 1; i < size; i++) {
+            vector[i] = vector[i + 1];
+        }
+        size--;
     }
 
     public void printVector() {
